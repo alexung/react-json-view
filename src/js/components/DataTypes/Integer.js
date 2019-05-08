@@ -13,6 +13,7 @@ export default class extends React.PureComponent {
             <div {...Theme(props.theme, 'integer')}>
                 <DataTypeLabel type_name={type_name} {...props} />
                 {this.props.value}
+                {props.highlight ? 'HIGHLIGHT' : 'NON-HIGHLIGHT'}
             </div>
         );
     }
