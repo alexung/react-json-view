@@ -65,6 +65,9 @@ export default class extends React.PureComponent {
                 >
                     "{value}"
                 </span>
+                <span>
+                    {type_name === props.highlight ? 'HIGHLIGHT' : 'NON-HIGHLIGHT'}
+                </span>
             </div>
         );
     }
