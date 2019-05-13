@@ -42,7 +42,6 @@ export default class extends React.PureComponent {
         let { value } = props;
         let collapsible = toType(collapseStringsAfterLength) === 'integer';
         let style = { style: { cursor: 'default' } };
-
         if (collapsible && value.length > collapseStringsAfterLength) {
             style.style.cursor = 'pointer';
             if (this.state.collapsed) {
@@ -64,9 +63,6 @@ export default class extends React.PureComponent {
                     onClick={this.toggleCollapsed}
                 >
                     "{value}"
-                </span>
-                <span>
-                    {type_name === props.highlight ? 'HIGHLIGHT' : 'NON-HIGHLIGHT'}
                 </span>
             </div>
         );

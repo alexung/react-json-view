@@ -14,7 +14,6 @@ import './../style/scss/global.scss';
 
 //forward src through to JsonObject component
 class ReactJsonView extends React.PureComponent {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -30,12 +29,12 @@ class ReactJsonView extends React.PureComponent {
             // old and new props in getDerivedStateFromProps().
             prevSrc: ReactJsonView.defaultProps.src,
             prevName: ReactJsonView.defaultProps.name,
-            prevTheme: ReactJsonView.defaultProps.theme,
+            prevTheme: ReactJsonView.defaultProps.theme
         };
     }
 
     //reference id for this instance
-    rjvId = Date.now().toString()
+    rjvId = Date.now().toString();
 
     //all acceptable props and default values
     static defaultProps = {
@@ -59,12 +58,14 @@ class ReactJsonView extends React.PureComponent {
         style: {},
         validationMessage: 'Validation Error',
         defaultValue: null,
-        highlight: 'id'
-    }
+        highlight: 'id',
+        updateRenderValue: false
+    };
 
     // will trigger whenever setState() is called, or parent passes in new props.
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.src !== prevState.prevSrc ||
+        if (
+            nextProps.src !== prevState.prevSrc ||
             nextProps.name !== prevState.prevName ||
             nextProps.theme !== prevState.prevTheme
         ) {
@@ -85,18 +86,11 @@ class ReactJsonView extends React.PureComponent {
 
     componentDidMount() {
         // initialize
-        ObjectAttributes.set(
-            this.rjvId,
-            'global',
-            'src',
-            this.state.src
-        );
+        ObjectAttributes.set(this.rjvId, 'global', 'src', this.state.src);
         // bind to events
         const listeners = this.getListeners();
         for (const i in listeners) {
-            ObjectAttributes.on(
-                i + '-' + this.rjvId, listeners[i]
-            );
+            ObjectAttributes.on(i + '-' + this.rjvId, listeners[i]);
         }
         //reset key request to false once it's observed
         this.setState({
@@ -118,38 +112,29 @@ class ReactJsonView extends React.PureComponent {
             });
         }
         if (prevProps.src !== this.state.src) {
-            ObjectAttributes.set(
-                this.rjvId,
-                'global',
-                'src',
-                this.state.src
-            );
+            ObjectAttributes.set(this.rjvId, 'global', 'src', this.state.src);
         }
     }
 
     componentWillUnmount() {
         const listeners = this.getListeners();
         for (const i in listeners) {
-            ObjectAttributes.removeListener(
-                i + '-' + this.rjvId, listeners[i]
-            );
+            ObjectAttributes.removeListener(i + '-' + this.rjvId, listeners[i]);
         }
     }
 
     getListeners = () => {
         return {
-            'reset': this.resetState,
+            reset: this.resetState,
             'variable-update': this.updateSrc,
             'add-key-request': this.addKeyRequest
         };
-    }
+    };
     //make sure props are passed in as expected
-    static validateState = (state) => {
+    static validateState = state => {
         const validatedState = {};
         //make sure theme is valid
-        if (toType(state.theme) === 'object'
-            && !isTheme(state.theme)
-        ) {
+        if (toType(state.theme) === 'object' && !isTheme(state.theme)) {
             console.error(
                 'react-json-view error:',
                 'theme prop must be a theme name or valid base-16 theme object.',
@@ -158,13 +143,8 @@ class ReactJsonView extends React.PureComponent {
             validatedState.theme = 'rjv-default';
         }
         //make sure `src` prop is valid
-        if (toType(state.src) !== 'object'
-            && toType(state.src) !== 'array'
-        ) {
-            console.error(
-                'react-json-view error:',
-                'src property must be a valid json object'
-            );
+        if (toType(state.src) !== 'object' && toType(state.src) !== 'array') {
+            console.error('react-json-view error:', 'src property must be a valid json object');
             validatedState.name = 'ERROR';
             validatedState.src = {
                 message: 'src property must be a valid json object'
@@ -176,7 +156,7 @@ class ReactJsonView extends React.PureComponent {
             // override the original state
             ...validatedState
         };
-    }
+    };
 
     render() {
         const {
@@ -199,30 +179,36 @@ class ReactJsonView extends React.PureComponent {
                     message={validationMessage}
                     active={validationFailure}
                     theme={theme}
-                    rjvId={this.rjvId} />
+                    rjvId={this.rjvId}
+                />
                 <JsonViewer
                     {...this.props}
                     src={src}
                     name={name}
                     theme={theme}
                     type={toType(src)}
-                    rjvId={this.rjvId} />
+                    rjvId={this.rjvId}
+                />
                 <AddKeyRequest
                     active={addKeyRequest}
                     theme={theme}
                     rjvId={this.rjvId}
-                    defaultValue={defaultValue} />
+                    defaultValue={defaultValue}
+                />
             </div>
         );
     }
 
     updateSrc = () => {
         const {
-            name, namespace, new_value, existing_value,
-            variable_removed, updated_src, type
-        } = ObjectAttributes.get(
-            this.rjvId, 'action', 'variable-update'
-        );
+            name,
+            namespace,
+            new_value,
+            existing_value,
+            variable_removed,
+            updated_src,
+            type
+        } = ObjectAttributes.get(this.rjvId, 'action', 'variable-update');
         const { onEdit, onDelete, onAdd } = this.props;
 
         const { src } = this.state;
@@ -235,7 +221,7 @@ class ReactJsonView extends React.PureComponent {
             updated_src: updated_src,
             name: name,
             namespace: namespace,
-            existing_value: existing_value,
+            existing_value: existing_value
         };
 
         switch (type) {
@@ -260,20 +246,20 @@ class ReactJsonView extends React.PureComponent {
                 validationFailure: true
             });
         }
-    }
+    };
 
     addKeyRequest = () => {
         this.setState({
             addKeyRequest: true
         });
-    }
+    };
 
     resetState = () => {
         this.setState({
             validationFailure: false,
             addKeyRequest: false
         });
-    }
+    };
 }
 
 polyfill(ReactJsonView);

@@ -135,6 +135,10 @@ export interface ReactJsonViewProps {
    * Default: null
    */
   defaultValue?: TypeDefaultValue | TypeDefaultValue[] | null;
+  /**
+   *
+   */
+  updateRenderValue?: ((select: OnSelectProps) => void) | false;
 }
 
 export interface OnCopyProps {
